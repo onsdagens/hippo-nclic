@@ -1,39 +1,52 @@
-// test_nclic
+// sim_tree
 `timescale 1ns / 1ps
 
-module sim_tree;
+module test_nclic;
   logic clk;
   logic reset;
-localparam priorities = 4;
-localparam priority_width = $clog2(priorities);
-localparam type IntPriority = logic [priority_width-1:0];
+  localparam integer Priorities = 4;
+  localparam integer PriorityWidth = $clog2(Priorities);
+  localparam type IntPrio = logic [Priorities-1:0];
 
-localparam int_amount = 8;
-localparam int_id_width = $clog2(int_amount);
-localparam type IntIndex = logic [int_id_width-1:0];
+  localparam integer IntAmount = 8;
+  localparam integer IntIdWidth = $clog2(IntAmount);
+  localparam type IntId = logic [IntIdWidth-1:0];
 
 
- IntPrio priorities[int_amount];
- wire pendings[int_amount];
- wire enables[int_amount];
- IntId idx;
- IntPriority prio;
- wire interrupt;
- assign priorities = '{0,0,3,0,2,1,0,0};
- assign pendings = '{0,1,1,0,1,0,1,1};
- assign enables = '{1,0,0,1,1,1,1};
-  n_clic #(
-    .IntIndex(IntIndex),
-    .IntPriority(IntPriority)
-  ) clic (
-    .i_priorities(priorities),
-    .i_pendings(pendings),
-    .i_enables(enables),
-    .i_global_ie(1),
-    .o_int(interrupt),
-    .o_idx(idx),
-    .o_prio(prio)
-    );
+  IntPrio prio_arr[IntAmount];
+  logic   pendings[IntAmount];
+  logic   enableds[IntAmount];
+
+  assign prio_arr = '{0, 3, 2, 1, 3, 0, 2, 3};
+  assign enableds = '{1, 0, 0, 1, 1, 0, 1, 0};
+  assign pendings = '{0, 1, 1, 0, 0, 0, 1, 0};
+
+  IntPrio prio_out;
+  IntId idx_out;
+
+  wire int_out;
+
+  nclic #(
+      .IntIndex(IntId),
+      .IntPriority(IntPrio),
+      .IntAmount(IntAmount)
+  ) n_clic_instance (
+      .clk  (clk),
+      .reset(reset),
+
+      .i_priorities(prio_arr),
+      .i_pendings(pendings),
+      .i_enables(enableds),
+
+      .i_global_ie(1),
+      .mret(0),
+
+      .o_int(int_out),
+      .o_idx(idx_out),
+
+      .o_prio(prio_out)
+
+  );
 
   // clock and reset
   initial begin
@@ -50,8 +63,10 @@ localparam type IntIndex = logic [int_id_width-1:0];
   end
 
   initial begin
-    $dumpfile("sim_nclic.fst");
+    $dumpfile("sim_tree.fst");
     $dumpvars;
+    #490;
+    assign pendings = '{0, 1, 1, 0, 1, 0, 1, 0};
     #100000;
     $finish;
   end
