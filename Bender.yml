@@ -15,6 +15,7 @@ sources:
     - ./hdl/src/csr_table.sv
     - ./hdl/src/types_pkg.sv
     - ./hdl/src/nclic_top.sv
+    - ./hdl/src/tree.sv
     #- target: verilator
     # files: 
       #   - ./hdl/src/test_nclic_top.sv
