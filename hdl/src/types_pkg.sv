@@ -2,6 +2,14 @@
 
 package types_pkg;
 
+  localparam integer Priorities = 8;
+  localparam integer PrioWidth = $clog2(Priorities);
+  typedef logic [PrioWidth-1:0] IntPrio;
+
+  localparam integer IntAmount = 8;
+  localparam integer IntIdxWidth = $clog2(IntAmount);
+  typedef logic [IntIdxWidth-1:0] IntIdx;
+
   // CSR Related
   typedef logic [11:0] CsrAddrT;
 
@@ -18,4 +26,11 @@ package types_pkg;
 
   typedef logic [4:0] r;
   typedef logic [31:0] word;
+
+
+  typedef struct packed {
+    IntPrio prio;
+    logic   enabled;
+    logic   pending;
+  } int_config_t;
 endpackage

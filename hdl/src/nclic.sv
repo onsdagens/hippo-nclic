@@ -20,8 +20,6 @@ module nclic #(
     // this should be enough to index into some rf no?
     // when tail chaining there is potentially some leakage is that fine?
     output IntPriority o_prio
-
-
 );
 
   IntPriority filtered_priorities[IntAmount];

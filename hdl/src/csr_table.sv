@@ -30,12 +30,13 @@ module csr_table
   generate
     for (i = 0; i < TableSize; i++) begin : gen_table
       csr #(
-          .CsrDataT(CsrDataT)
+          .CsrDataT(CsrDataT),
+          .Addr(BottomRange + i)
       ) csr (
           .clk(clk),
           .reset(reset),
           .csr_enable(csr_enable),
-          .csr_addr(csr_addr),
+          .csr_addr(i_csr_addr),
           .csr_op(csr_op),
           .rs1_zimm(rs1_zimm),
           .rs1_data(rs1_data),
@@ -50,7 +51,7 @@ module csr_table
   endgenerate
 
   always_comb begin
-    csr_ext_write_enable = '{0};
+    csr_ext_write_enable = '0;
     csr_ext_write_enable[ext_idx] = ext_write_enable;
   end
 endmodule
